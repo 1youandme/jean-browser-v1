@@ -1,0 +1,13 @@
+npm warn idealTree Removing dependencies.@types/node in favor of devDependencies.@types/node
+
+up to date, audited 285 packages in 815ms
+
+64 packages are looking for funding
+  run `npm fund` for details
+
+2 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.

@@ -1,0 +1,256 @@
+version: '3.8'
+
+services:
+  # Qwen-3 Text Generation (72B/32B)
+  qwen-3-72b:
+    build:
+      context: ./docker/qwen3
+      dockerfile: Dockerfile
+      args:
+        MODEL_NAME: "Qwen/Qwen-3-72B"
+        QUANTIZATION: "Q4_K_M"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - MODEL_PATH=/models/qwen-3-72b.Q4_K_M.gguf
+      - MAX_CTX=32768
+      - HOST=0.0.0.0
+      - PORT=8000
+    volumes:
+      - ./models:/models:ro
+      - ./outputs:/outputs
+    ports:
+      - "8001:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # SDXL Image Generation
+  sdxl:
+    image: ghcr.io/huggingface/diffusers:latest
+    command: >
+      bash -c "
+        pip install transformers accelerate torch &&
+        python -c '
+        import torch
+        from diffusers import DiffusionPipeline
+        import uvicorn
+        from fastapi import FastAPI
+        from pydantic import BaseModel
+        import base64
+        import io
+        from PIL import Image
+
+        app = FastAPI()
+        pipe = DiffusionPipeline.from_pretrained(&quot;stabilityai/stable-diffusion-xl-base-1.0&quot;, torch_dtype=torch.float16, use_safetensors=True, variant=&quot;fp16&quot;)
+        pipe.to(&quot;cuda&quot;)
+
+        class GenerateRequest(BaseModel):
+            prompt: str
+            negative_prompt: str = &quot;&quot;
+            num_inference_steps: int = 20
+            guidance_scale: float = 7.5
+
+        @app.post(&quot;/generate&quot;)
+        async def generate(req: GenerateRequest):
+            image = pipe(req.prompt, negative_prompt=req.negative_prompt, num_inference_steps=req.num_inference_steps, guidance_scale=req.guidance_scale).images[0]
+            buf = io.BytesIO()
+            image.save(buf, format=&quot;PNG&quot;)
+            img_str = base64.b64encode(buf.getvalue()).decode()
+            return {&quot;image&quot;: img_str, &quot;success&quot;: True}
+
+        @app.get(&quot;/health&quot;)
+        async def health():
+            return {&quot;status&quot;: &quot;healthy&quot;}
+
+        if __name__ == &quot;__main__&quot;:
+            uvicorn.run(app, host=&quot;0.0.0.0&quot;, port=8000)
+        '
+      "
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - MAX_RESOLUTION=1024x1024
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./outputs/images:/app/outputs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Whisper Speech-to-Text
+  whisper:
+    image: ghcr.io/openai/whisper:latest
+    command: >
+      bash -c "
+        pip install openai-whisper fastapi uvicorn
+        cat > /app/server.py << 'EOF'
+        import whisper
+        import uvicorn
+        from fastapi import FastAPI, File, UploadFile
+        from pydantic import BaseModel
+        import io
+        import base64
+
+        app = FastAPI()
+        model = whisper.load_model(&quot;base&quot;)
+
+        @app.post(&quot;/transcribe&quot;)
+        async def transcribe(audio: UploadFile = File(...)):
+            with open(&quot;temp.wav&quot;, &quot;wb&quot;) as f:
+                f.write(await audio.read())
+            result = model.transcribe(&quot;temp.wav&quot;)
+            return {&quot;text&quot;: result[&quot;text&quot;], &quot;language&quot;: result[&quot;language&quot;]}
+
+        @app.get(&quot;/health&quot;)
+        async def health():
+            return {&quot;status&quot;: &quot;healthy&quot;}
+        EOF
+        uvicorn.run app.server:app --host 0.0.0.0 --port 8000
+      "
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    ports:
+      - "8004:8000"
+    volumes:
+      - ./temp:/app/temp
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Coqui Text-to-Speech
+  coqui:
+    image: ghcr.io/coqui-tts/coqui-tts:latest
+    command: >
+      bash -c "
+        pip install fastapi uvicorn
+        cat > /app/server.py << 'EOF'
+        from TTS.api import TTS
+        import uvicorn
+        from fastapi import FastAPI, File, UploadFile
+        from pydantic import BaseModel
+        import io
+        import base64
+
+        app = FastAPI()
+        tts = TTS(model_name=&quot;tts_models/multilingual/multi-dataset/xtts_v2&quot;)
+
+        @app.post(&quot;/synthesize&quot;)
+        async def synthesize(text: str, language: str = &quot;en&quot;):
+            wav_path = &quot;/tmp/output.wav&quot;
+            tts.tts_to_file(text=text, speaker=&quot;Claribel Dervla&quot;, language=language, file_path=wav_path)
+            with open(wav_path, &quot;rb&quot;) as f:
+                audio_data = base64.b64encode(f.read()).decode()
+            return {&quot;audio&quot;: audio_data, &quot;success&quot;: True}
+
+        @app.get(&quot;/health&quot;)
+        async def health():
+            return {&quot;status&quot;: &quot;healthy&quot;}
+        EOF
+        uvicorn.run app.server:app --host 0.0.0.0 --port 8000
+      "
+    ports:
+      - "8005:8000"
+    volumes:
+      - ./temp:/app/temp
+      - ./outputs/audio:/app/outputs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # AI Gateway (Orchestrator) - Rust Implementation
+  ai-gateway:
+    build:
+      context: ./src-tauri
+      dockerfile: Dockerfile.ai-gateway
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://jeantrail:secure_password_123@postgres:5432/jeantrail
+      - REDIS_URL=redis://model-registry:6379
+      - QWEN_URL=http://qwen-3-72b:8000
+      - SDXL_URL=http://sdxl:8000
+      - WHISPER_URL=http://whisper:8000
+      - COQUI_URL=http://coqui:8000
+    depends_on:
+      - qwen-3-72b
+      - sdxl
+      - whisper
+      - coqui
+      - postgres
+      - model-registry
+    volumes:
+      - ./outputs:/outputs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Model Registry (Redis)
+  model-registry:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_ai:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Results Database (using existing postgres)
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: jeantrail
+      POSTGRES_USER: jeantrail
+      POSTGRES_PASSWORD: secure_password_123
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jeantrail"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  pg_data:
+  redis_ai:
+  models:

@@ -1,0 +1,11 @@
+-rw-r--r-- 1 root root  8666 Dec  8 02:40 Header.tsx
+-rw-r--r-- 1 root root  7112 Dec  9 16:38 HeaderRedesigned.tsx
+-rw-r--r-- 1 root root  8579 Dec  5 01:05 JeanAssistant.tsx
+-rw-r--r-- 1 root root 19507 Dec  8 20:09 JeanAvatar.tsx
+-rw-r--r-- 1 root root 11171 Dec  9 16:38 JeanAvatar3D.tsx
+-rw-r--r-- 1 root root 18417 Dec  7 18:01 JeanChatPanel.tsx
+-rw-r--r-- 1 root root 11317 Dec  7 17:58 JeanDeveloperConsole.tsx
+-rw-r--r-- 1 root root  5260 Dec  9 16:38 JeanIcon.tsx
+-rw-r--r-- 1 root root 19277 Dec  6 23:59 JeanModelHub.tsx
+-rw-r--r-- 1 root root 18635 Dec  6 23:56 JeanSettings.tsx
+-rw-r--r-- 1 root root  7886 Dec  9 16:39 WorkZoneRedesigned.tsx

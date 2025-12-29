@@ -1,0 +1,7 @@
+{
+  "route": "ui_explanation",
+  "policy": "respect_freeze",
+  "explanation": "explain_context",
+  "block": "block_and_explain",
+  "consent": "seek_consent_nonbinding"
+}

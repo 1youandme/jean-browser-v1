@@ -1,0 +1,7 @@
+# This directory will contain animation files for Jean 3D model
+# Files include:
+# - idle.glb (idle animation)
+# - talking.glb (talking animation)
+# - happy.glb (happy expression)
+# - sad.glb (sad expression)
+# - etc.

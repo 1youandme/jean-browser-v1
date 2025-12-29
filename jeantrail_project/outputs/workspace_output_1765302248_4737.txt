@@ -1,0 +1,30 @@
+// Prevents additional console window on Windows in release, DO NOT REMOVE!!
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
+mod commands;
+mod ai;
+mod proxy;
+mod workspace;
+mod local_fs;
+mod models;
+mod error;
+mod ai_gateway;
+mod prompt_engineering;
+mod backlog;
+mod loyalty;
+mod plugins;
+mod security;
+mod integrations;
+mod video_studio;
+mod local_hub;
+mod auto_api;
+mod transport;
+
+use axum::{
+    routing::{get, post},
+    Json, Router,
+};
+use serde_json::Value;
+use std::net::SocketAddr;
+use tokio::net::TcpListener;
+use tower_http::cors::CorsLayer;

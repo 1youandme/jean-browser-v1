@@ -1,0 +1,11 @@
+     1	      return task;
+     2	    }).filter(task => task.status !== 'completed' || 
+     3	      (new Date().getTime() - task.startTime.getTime()) < 30000)); // Keep completed tasks for 30 seconds
+     4	  });
+     5	
+     6	  const checkConnectionStatus = () => {
+     7	    // Simulate connection status changes
+     8	    if (Math.random() > 0.95) {
+     9	      setConnectionStatus('connecting');
+    10	      setTimeout(() => setConnectionStatus('connected'), 1000);
+    11	    }

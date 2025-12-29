@@ -1,0 +1,350 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    container_name: jeantrail-postgres
+    environment:
+      POSTGRES_DB: jeantrail
+      POSTGRES_USER: jeantrail
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./database/seed_data.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jeantrail -d jeantrail"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis cache
+  redis:
+    image: redis:7-alpine
+    container_name: jeantrail-redis
+    command: redis-server --appendonly yes --requirepass redis_password
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # JeanTrail application
+  jeantrail:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jeantrail-app
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://jeantrail:password@postgres:5432/jeantrail
+      REDIS_URL: redis://:redis_password@redis:6379
+      RUST_LOG: info
+      JEAN_AI_ENDPOINT: http://localhost:11434
+      WEBHOOK_SECRET: your_webhook_secret_here
+      AI_SERVICE_URL: http://qwen3:5000
+      SDXL_SERVICE_URL: http://sdxl:5001
+      COGVIDEOX_SERVICE_URL: http://cogvideox:5002
+      WHISPER_SERVICE_URL: http://whisper:5003
+      WAV2LIP_SERVICE_URL: http://wav2lip:5004
+      COQUI_TTS_SERVICE_URL: http://coqui_tts:5005
+    ports:
+      - "3000:3000"  # Frontend
+      - "8080:8080"  # Backend API
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+      - ./plugins:/app/plugins
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qwen3:
+        condition: service_healthy
+      sdxl:
+        condition: service_healthy
+      cogvideox:
+        condition: service_healthy
+      whisper:
+        condition: service_healthy
+      wav2lip:
+        condition: service_healthy
+      coqui_tts:
+        condition: service_healthy
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Qwen-3 AI Service
+  qwen3:
+    build:
+      context: ./docker/qwen3
+      dockerfile: Dockerfile
+    restart: always
+    container_name: jeantrail-qwen3
+    ports:
+      - "5000:5000"
+    environment:
+      - MODEL_NAME=Qwen/Qwen2-7B-Instruct
+      - MODEL_CACHE_DIR=/app/models
+      - MAX_LENGTH=2048
+      - TEMPERATURE=0.7
+      - TOP_P=0.8
+      - TOP_K=50
+      - MAX_CONCURRENT_REQUESTS=10
+    volumes:
+      - qwen3_models:/app/models
+      - ./docker/qwen3:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - jeantrail-network
+
+  # SDXL Image Generation Service
+  sdxl:
+    build:
+      context: ./docker/sdxl
+      dockerfile: Dockerfile
+    restart: always
+    container_name: jeantrail-sdxl
+    ports:
+      - "5001:5001"
+    environment:
+      - MODEL_CACHE_DIR=/app/models
+      - MAX_IMAGE_SIZE=1024
+    volumes:
+      - sdxl_models:/app/models
+      - ./docker/sdxl:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - jeantrail-network
+
+  # CogVideoX Video Generation Service
+  cogvideox:
+    build:
+      context: ./docker/cogvideox
+      dockerfile: Dockerfile
+    restart: always
+    container_name: jeantrail-cogvideox
+    ports:
+      - "5002:5002"
+    environment:
+      - MODEL_CACHE_DIR=/app/models
+      - MAX_VIDEO_LENGTH=120
+    volumes:
+      - cogvideox_models:/app/models
+      - ./docker/cogvideox:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - jeantrail-network
+
+  # Whisper Speech Recognition Service
+  whisper:
+    build:
+      context: ./docker/whisper
+      dockerfile: Dockerfile
+    restart: always
+    container_name: jeantrail-whisper
+    ports:
+      - "5003:5003"
+    environment:
+      - MODEL_NAME=base
+      - MODEL_CACHE_DIR=/app/models
+    volumes:
+      - whisper_models:/app/models
+      - ./docker/whisper:/app
+    networks:
+      - jeantrail-network
+
+  # Wav2Lip Lip Sync Service
+  wav2lip:
+    build:
+      context: ./docker/wav2lip
+      dockerfile: Dockerfile
+    restart: always
+    container_name: jeantrail-wav2lip
+    ports:
+      - "5004:5004"
+    environment:
+      - MODEL_CACHE_DIR=/app/models
+    volumes:
+      - wav2lip_models:/app/models
+      - ./docker/wav2lip:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - jeantrail-network
+
+  # Coqui TTS Service
+  coqui_tts:
+    build:
+      context: ./docker/coqui_tts
+      dockerfile: Dockerfile
+    restart: always
+    container_name: jeantrail-coqui_tts
+    ports:
+      - "5005:5005"
+    environment:
+      - MODEL_CACHE_DIR=/app/models
+      - DEFAULT_VOICE=en
+    volumes:
+      - coqui_tts_models:/app/models
+      - ./docker/coqui_tts:/app
+    networks:
+      - jeantrail-network
+
+  # Ollama for local AI models (optional)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: jeantrail-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    command: serve
+
+  # Nginx reverse proxy (optional)
+  nginx:
+    image: nginx:alpine
+    container_name: jeantrail-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - jeantrail
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+  # Prometheus monitoring (optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: jeantrail-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # Grafana dashboard (optional)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: jeantrail-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  ollama_data:
+    driver: local
+  qwen3_models:
+    driver: local
+  sdxl_models:
+    driver: local
+  cogvideox_models:
+    driver: local
+  whisper_models:
+    driver: local
+  wav2lip_models:
+    driver: local
+  coqui_tts_models:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  jeantrail-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

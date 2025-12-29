@@ -1,0 +1,3 @@
+This is a MODIFIED test file for warmup exercises.
+It contains some initial content to test the str-replace functionality.
+Let's see if we can modify this content successfully.

@@ -1,0 +1,4 @@
+ 19:04:10 up 37 min,  0 user,  load average: 0.03, 0.01, 0.00
+               total        used        free      shared  buff/cache   available
+Mem:           3.8Gi       760Mi       2.6Gi        12Mi       768Mi       3.1Gi
+Swap:             0B          0B          0B

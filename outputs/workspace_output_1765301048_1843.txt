@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Qwen-3 Text Generation (72B/32B)
+  qwen-3-72b:
+    build:
+      context: ./docker/qwen3
+      dockerfile: Dockerfile
+      args:
+        MODEL_NAME: "Qwen/Qwen-3-72B"
+        QUANTIZATION: "Q4_K_M"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - MODEL_PATH=/models/qwen-3-72b.Q4_K_M.gguf
+      - MAX_CTX=32768
+      - HOST=0.0.0.0
+      - PORT=8000
+    volumes:
+      - ./models:/models:ro
+      - ./outputs:/outputs
+    ports:
+      - "8001:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # SDXL Image Generation
+  sdxl:
+    image: ghcr.io/huggingface/diffusers:latest
+    command: >
+      bash -c "
+        pip install transformers accelerate torch &&
+        python -c '
+        import torch
+        from diffusers import DiffusionPipeline
+        import uvicorn
+        from fastapi import FastAPI
+        from pydantic import BaseModel
+        import base64
+        import io
+        from PIL import Image

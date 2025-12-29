@@ -1,0 +1,1 @@
+5:src/components/JeanChatPanel.tsx(138,4): error TS1005: ',' expected.

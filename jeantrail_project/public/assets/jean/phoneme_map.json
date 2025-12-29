@@ -1,0 +1,18 @@
+{
+  "visemes": ["A", "E", "O", "M", "F", "L", "S"],
+  "bands": {
+    "low": [0, 300],
+    "mid": [300, 3000],
+    "high": [3000, 8000]
+  },
+  "mapping": [
+    { "name": "A", "band": "mid", "peak": 800 },
+    { "name": "E", "band": "high", "peak": 4000 },
+    { "name": "O", "band": "mid", "peak": 500 },
+    { "name": "M", "band": "low", "peak": 120 },
+    { "name": "F", "band": "high", "peak": 6000 },
+    { "name": "L", "band": "mid", "peak": 1200 },
+    { "name": "S", "band": "high", "peak": 7000 }
+  ],
+  "latency_target_ms": 80
+}

@@ -1,0 +1,73 @@
+{
+  "scraper": {
+    "max_retries": 3,
+    "retry_delay": 2.0,
+    "request_timeout": 30,
+    "concurrent_requests": 5,
+    "delay_between_requests": 1.0,
+    "use_proxies": true,
+    "use_selenium": false,
+    "headless": true,
+    "max_products_per_run": 100,
+    "enable_categorization": true,
+    "save_images": false,
+    "enable_notifications": true
+  },
+  "proxy": {
+    "enabled": false,
+    "proxy_list": [
+      "http://proxy1.example.com:8080",
+      "http://proxy2.example.com:8080",
+      "http://proxy3.example.com:8080"
+    ],
+    "rotation_enabled": true,
+    "current_proxy_index": 0
+  },
+  "gmail": {
+    "credentials_file": "credentials.json",
+    "token_file": "token.json",
+    "accounts": [
+      {
+        "email": "your-email-1@gmail.com",
+        "name": "Account 1"
+      },
+      {
+        "email": "your-email-2@gmail.com", 
+        "name": "Account 2"
+      },
+      {
+        "email": "your-email-3@gmail.com",
+        "name": "Account 3"
+      }
+    ],
+    "current_account_index": 0
+  },
+  "sources": {
+    "amazon": {
+      "enabled": true,
+      "base_urls": ["https://www.amazon.com"],
+      "rate_limit": 1.0,
+      "selectors": {
+        "title": "#productTitle",
+        "price": ".a-price .a-offscreen",
+        "description": "#feature-bullets ul",
+        "rating": "[data-hook='average-star-rating'] .a-icon-alt",
+        "reviews": "[data-hook='total-review-count']",
+        "images": "#landingImage",
+        "seller": "#bylineInfo"
+      }
+    },
+    "ebay": {
+      "enabled": true,
+      "base_urls": ["https://www.ebay.com"],
+      "rate_limit": 2.0,
+      "selectors": {
+        "title": "#x-title-label-lbl",
+        "price": ".u-flL .notranslate",
+        "description": "#desc_div",
+        "rating": ".reviews-item-rating",
+        "images": "#icImg"
+      }
+    }
+  }
+}

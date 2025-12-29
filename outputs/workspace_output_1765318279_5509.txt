@@ -1,0 +1,199 @@
+
+> jeantrail-browser@1.0.0 build
+> tsc && vite build
+
+src/components/AgentManagementPanel.tsx(374,20): error TS2739: Type '{ children: Element[]; }' is missing the following properties from type 'DialogProps': isOpen, onClose
+src/components/AgentManagementPanel.tsx(375,36): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & { children: ReactNode; onClick: () => void; className?: string | undefined; }'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & { children: ReactNode; onClick: () => void; className?: string | undefined; }'.
+src/components/AiGatewayInterface.tsx(2,58): error TS2307: Cannot find module './ui/card' or its corresponding type declarations.
+src/components/AiGatewayInterface.tsx(3,24): error TS2307: Cannot find module './ui/button' or its corresponding type declarations.
+src/components/AiGatewayInterface.tsx(4,23): error TS2307: Cannot find module './ui/input' or its corresponding type declarations.
+src/components/AiGatewayInterface.tsx(5,26): error TS2307: Cannot find module './ui/textarea' or its corresponding type declarations.
+src/components/AiGatewayInterface.tsx(6,79): error TS2307: Cannot find module './ui/select' or its corresponding type declarations.
+src/components/AiGatewayInterface.tsx(7,23): error TS2307: Cannot find module './ui/badge' or its corresponding type declarations.
+src/components/AiGatewayInterface.tsx(8,58): error TS2307: Cannot find module './ui/tabs' or its corresponding type declarations.
+src/components/AiGatewayInterface.tsx(9,26): error TS2307: Cannot find module './ui/progress' or its corresponding type declarations.
+src/components/AiGatewayInterface.tsx(10,41): error TS2307: Cannot find module './ui/alert' or its corresponding type declarations.
+src/components/AiGatewayInterface.tsx(428,28): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/AiGatewayInterface.tsx(438,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/AiGatewayInterface.tsx(448,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/AiGatewayInterface.tsx(488,28): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/AiGatewayInterface.tsx(495,28): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/AiGatewayInterface.tsx(536,28): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/JeanChatPanel.tsx(126,24): error TS2345: Argument of type '(prev: BackgroundTask[]) => { progress: number; status: string; id: string; description: string; startTime: Date; }[]' is not assignable to parameter of type 'SetStateAction<BackgroundTask[]>'.
+  Type '(prev: BackgroundTask[]) => { progress: number; status: string; id: string; description: string; startTime: Date; }[]' is not assignable to type '(prevState: BackgroundTask[]) => BackgroundTask[]'.
+    Type '{ progress: number; status: string; id: string; description: string; startTime: Date; }[]' is not assignable to type 'BackgroundTask[]'.
+      Type '{ progress: number; status: string; id: string; description: string; startTime: Date; }' is not assignable to type 'BackgroundTask'.
+        Types of property 'status' are incompatible.
+          Type 'string' is not assignable to type '"completed" | "failed" | "running"'.
+src/components/JeanDeveloperConsole.tsx(10,32): error TS2307: Cannot find module './EcommercePanel' or its corresponding type declarations.
+src/components/JeanDeveloperConsole.tsx(11,30): error TS2307: Cannot find module './PaymentPanel' or its corresponding type declarations.
+src/components/JeanDeveloperConsole.tsx(12,36): error TS2307: Cannot find module './SecurityAuditPanel' or its corresponding type declarations.
+src/components/JeanDeveloperConsole.tsx(13,38): error TS2307: Cannot find module './EmailManagementPanel' or its corresponding type declarations.
+src/components/JeanDeveloperConsole.tsx(14,40): error TS2307: Cannot find module './APIKeysManagementPanel' or its corresponding type declarations.
+src/components/JeanModelHub.tsx(3,80): error TS2307: Cannot find module '../types/jean-model-hub' or its corresponding type declarations.
+src/components/JeanModelHub.tsx(140,21): error TS2322: Type 'unknown' is not assignable to type 'Key | null | undefined'.
+src/components/JeanModelHub.tsx(140,32): error TS2322: Type 'unknown' is not assignable to type 'string | number | readonly string[] | undefined'.
+src/components/JeanModelHub.tsx(150,21): error TS2322: Type 'unknown' is not assignable to type 'Key | null | undefined'.
+src/components/JeanModelHub.tsx(150,35): error TS2322: Type 'unknown' is not assignable to type 'string | number | readonly string[] | undefined'.
+src/components/JeanModelHub.tsx(210,53): error TS7006: Parameter 'cap' implicitly has an 'any' type.
+src/components/JeanModelHub.tsx(447,51): error TS7006: Parameter 'cap' implicitly has an 'any' type.
+src/components/JeanModelHub.tsx(458,58): error TS7006: Parameter 'lang' implicitly has an 'any' type.
+src/components/JeanSettings.tsx(3,68): error TS2307: Cannot find module '../types/jean-multilingual' or its corresponding type declarations.
+src/components/JeanSettings.tsx(274,21): error TS2322: Type 'unknown' is not assignable to type 'Key | null | undefined'.
+src/components/JeanSettings.tsx(274,32): error TS2322: Type 'unknown' is not assignable to type 'string | number | readonly string[] | undefined'.
+src/components/JeanSettings.tsx(289,21): error TS2322: Type 'unknown' is not assignable to type 'Key | null | undefined'.
+src/components/JeanSettings.tsx(289,32): error TS2322: Type 'unknown' is not assignable to type 'string | number | readonly string[] | undefined'.
+src/components/JeanSettings.tsx(304,21): error TS2322: Type 'unknown' is not assignable to type 'Key | null | undefined'.
+src/components/JeanSettings.tsx(304,32): error TS2322: Type 'unknown' is not assignable to type 'string | number | readonly string[] | undefined'.
+src/components/LocalHub.tsx(3,68): error TS2307: Cannot find module '../types/local-hub' or its corresponding type declarations.
+src/components/PermissionManager.tsx(3,96): error TS2307: Cannot find module '../types/jean-permissions' or its corresponding type declarations.
+src/components/Wallet.tsx(2,10): error TS2440: Import declaration conflicts with local declaration of 'Wallet'.
+src/components/Wallet.tsx(270,23): error TS2322: Type '{ className: string; }' is not assignable to type 'IntrinsicAttributes'.
+  Property 'className' does not exist on type 'IntrinsicAttributes'.
+src/components/Wallet.tsx(306,23): error TS2322: Type '{ className: string; }' is not assignable to type 'IntrinsicAttributes'.
+  Property 'className' does not exist on type 'IntrinsicAttributes'.
+src/components/ecommerce/DeveloperStudio.tsx(3,34): error TS2307: Cannot find module '../../services/ecommerce/products' or its corresponding type declarations.
+src/components/ecommerce/DeveloperStudio.tsx(4,32): error TS2307: Cannot find module '../../services/ecommerce/pricing' or its corresponding type declarations.
+src/components/ecommerce/DeveloperStudio.tsx(5,34): error TS2307: Cannot find module '../../services/ecommerce/suppliers' or its corresponding type declarations.
+src/components/jean/JeanChat.tsx(3,33): error TS2307: Cannot find module '../../services/jean/jeanCore' or its corresponding type declarations.
+src/components/jean/JeanChat.tsx(4,41): error TS2307: Cannot find module '../../types/jean' or its corresponding type declarations.
+src/components/jean/JeanChat.tsx(124,51): error TS7006: Parameter 'action' implicitly has an 'any' type.
+src/components/jean/JeanChat.tsx(285,47): error TS7006: Parameter 'attachment' implicitly has an 'any' type.
+src/components/jean/JeanChat.tsx(285,59): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/components/jean/JeanChat.tsx(381,20): error TS2304: Cannot find name 'X'.
+src/components/jean/JeanSettings.tsx(3,33): error TS2307: Cannot find module '../../services/jean/jeanCore' or its corresponding type declarations.
+src/components/jean/PermissionManager.tsx(3,40): error TS2307: Cannot find module '../../services/jean/permissions' or its corresponding type declarations.
+src/hooks/useAI.ts(3,33): error TS2305: Module '"@/types"' has no exported member 'AIService'.
+src/hooks/useAI.ts(56,9): error TS2353: Object literal may only specify known properties, and 'message' does not exist in type 'AIRequest'.
+src/hooks/useAI.ts(67,20): error TS2339: Property 'stream' does not exist on type 'AIResponse'.
+src/hooks/useAI.ts(68,44): error TS2339: Property 'stream' does not exist on type 'AIResponse'.
+src/hooks/useAI.ts(75,27): error TS2339: Property 'content' does not exist on type 'AIResponse'.
+src/hooks/useAI.ts(130,7): error TS2353: Object literal may only specify known properties, and 'message' does not exist in type 'AIRequest'.
+src/hooks/useAI.ts(174,7): error TS2353: Object literal may only specify known properties, and 'message' does not exist in type 'AIRequest'.
+src/hooks/useAuth.ts(3,16): error TS2305: Module '"@/types"' has no exported member 'LoginData'.
+src/hooks/useAuth.ts(3,27): error TS2305: Module '"@/types"' has no exported member 'RegisterData'.
+src/hooks/useDashboard.ts(3,10): error TS2305: Module '"@/types"' has no exported member 'ServiceStatus'.
+src/hooks/useDashboard.ts(3,25): error TS2305: Module '"@/types"' has no exported member 'SystemMetrics'.
+src/hooks/useDashboard.ts(3,40): error TS2305: Module '"@/types"' has no exported member 'Task'.
+src/hooks/useDashboard.ts(214,12): error TS7053: Element implicitly has an 'any' type because expression of type 'string | number | symbol' can't be used to index type '{ cpu: string; memory: string; disk: string; network: string; gpu: string; }'.
+  No index signature with a parameter of type 'string' was found on type '{ cpu: string; memory: string; disk: string; network: string; gpu: string; }'.
+src/hooks/useJeanAvatar.ts(90,24): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(91,24): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(92,24): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(93,42): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(94,42): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(95,42): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(96,28): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(97,46): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(98,26): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(99,47): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(100,43): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(101,46): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(102,43): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(103,50): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(104,28): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(105,27): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(106,43): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(107,44): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(108,47): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(109,28): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(110,27): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(111,49): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(112,27): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(113,48): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(114,27): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(115,45): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(116,29): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(117,46): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(118,27): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(119,45): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(120,27): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(121,48): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(122,25): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(123,27): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(124,50): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(125,45): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(126,28): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(127,27): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(128,45): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(129,29): error TS2322: Type 'string' is not assignable to type 'number'.
+src/hooks/useJeanAvatar.ts(414,7): error TS2322: Type 'string | number' is not assignable to type 'string'.
+  Type 'number' is not assignable to type 'string'.
+src/hooks/useJeanAvatar.ts(554,30): error TS2339: Property 'path' does not exist on type 'File'.
+src/hooks/useJeanAvatar.ts(555,34): error TS2339: Property 'path' does not exist on type 'File'.
+src/pages/Home.tsx(122,63): error TS2339: Property 'email' does not exist on type 'User'.
+src/pages/Profile.tsx(41,21): error TS2339: Property 'email' does not exist on type 'User'.
+src/pages/Profile.tsx(42,19): error TS2339: Property 'bio' does not exist on type 'User'.
+src/pages/Profile.tsx(43,24): error TS2339: Property 'location' does not exist on type 'User'.
+src/pages/Profile.tsx(44,23): error TS2339: Property 'website' does not exist on type 'User'.
+src/pages/Profile.tsx(45,21): error TS2339: Property 'phone' does not exist on type 'User'.
+src/pages/Profile.tsx(67,21): error TS2339: Property 'email' does not exist on type 'User'.
+src/pages/Profile.tsx(68,19): error TS2339: Property 'bio' does not exist on type 'User'.
+src/pages/Profile.tsx(69,24): error TS2339: Property 'location' does not exist on type 'User'.
+src/pages/Profile.tsx(70,23): error TS2339: Property 'website' does not exist on type 'User'.
+src/pages/Profile.tsx(71,21): error TS2339: Property 'phone' does not exist on type 'User'.
+src/pages/Profile.tsx(140,69): error TS2339: Property 'email' does not exist on type 'User'.
+src/pages/Profile.tsx(154,77): error TS2339: Property 'email' does not exist on type 'User'.
+src/pages/Profile.tsx(223,58): error TS2339: Property 'email' does not exist on type 'User'.
+src/pages/Profile.tsx(227,27): error TS2339: Property 'location' does not exist on type 'User'.
+src/pages/Profile.tsx(234,60): error TS2339: Property 'location' does not exist on type 'User'.
+src/pages/Profile.tsx(239,27): error TS2339: Property 'website' does not exist on type 'User'.
+src/pages/Profile.tsx(247,40): error TS2339: Property 'website' does not exist on type 'User'.
+src/pages/Profile.tsx(252,35): error TS2339: Property 'website' does not exist on type 'User'.
+src/pages/Profile.tsx(287,37): error TS2339: Property 'bio' does not exist on type 'User'.
+src/pages/Profile.tsx(292,75): error TS2339: Property 'bio' does not exist on type 'User'.
+src/pages/Projects.tsx(48,58): error TS2304: Cannot find name 'Project'.
+src/pages/Projects.tsx(64,52): error TS2304: Cannot find name 'Smartphone'.
+src/pages/Projects.tsx(65,48): error TS2304: Cannot find name 'Cpu'.
+src/pages/Projects.tsx(73,23): error TS7006: Parameter 'tag' implicitly has an 'any' type.
+src/pages/Projects.tsx(144,35): error TS2304: Cannot find name 'Project'.
+src/pages/Projects.tsx(155,37): error TS2304: Cannot find name 'Project'.
+src/pages/Projects.tsx(288,56): error TS7006: Parameter 'tag' implicitly has an 'any' type.
+src/pages/Settings.tsx(47,63): error TS2304: Cannot find name 'Sun'.
+src/pages/Settings.tsx(48,61): error TS2304: Cannot find name 'Moon'.
+src/pages/Settings.tsx(49,63): error TS2304: Cannot find name 'Monitor'.
+src/pages/Settings.tsx(120,28): error TS2339: Property 'email' does not exist on type 'User'.
+src/pages/Settings.tsx(124,44): error TS2339: Property 'email' does not exist on type 'User'.
+src/pages/Settings.tsx(126,84): error TS2339: Property 'email' does not exist on type 'User'.
+src/pages/Settings.tsx(139,34): error TS2339: Property 'email' does not exist on type 'User'.
+src/services/auth.service.ts(1,16): error TS2305: Module '"@/types"' has no exported member 'LoginData'.
+src/services/auth.service.ts(1,27): error TS2305: Module '"@/types"' has no exported member 'RegisterData'.
+src/services/autoApi.ts(252,13): error TS7006: Parameter 'response' implicitly has an 'any' type.
+src/services/autoApi.ts(270,13): error TS7006: Parameter 'response' implicitly has an 'any' type.
+src/services/autoApi.ts(280,11): error TS2322: Type '() => Promise<boolean>' is not assignable to type '() => boolean'.
+  Type 'Promise<boolean>' is not assignable to type 'boolean'.
+src/services/autoApi.ts(288,13): error TS7006: Parameter 'response' implicitly has an 'any' type.
+src/services/autoApi.ts(302,13): error TS7006: Parameter 'response' implicitly has an 'any' type.
+src/services/autoApi.ts(316,13): error TS7006: Parameter 'response' implicitly has an 'any' type.
+src/services/autoApi.ts(393,40): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/services/autoApi.ts(406,18): error TS2349: This expression is not callable.
+  Type 'OpenApiPathItem' has no call signatures.
+src/services/autoApi.ts(406,23): error TS7006: Parameter 'path' implicitly has an 'any' type.
+src/services/autoApi.ts(406,71): error TS2339: Property 'summary' does not exist on type '{}'.
+src/services/autoApi.ts(409,18): error TS2349: This expression is not callable.
+  Type 'OpenApiPathItem' has no call signatures.
+src/services/autoApi.ts(409,23): error TS7006: Parameter 'path' implicitly has an 'any' type.
+src/services/autoApi.ts(409,71): error TS2339: Property 'parameters' does not exist on type '{}'.
+src/services/autoApi.ts(409,88): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/services/delivery.ts(230,51): error TS2345: Argument of type '{ lat: string | undefined; lng: string | undefined; }' is not assignable to parameter of type 'string | Record<string, string> | URLSearchParams | string[][] | undefined'.
+  Type '{ lat: string | undefined; lng: string | undefined; }' is not assignable to type 'undefined'.
+src/services/index.ts(4,1): error TS2308: Module './ecommerce' has already exported a member named 'Address'. Consider explicitly re-exporting to resolve the ambiguity.
+src/services/index.ts(5,1): error TS2308: Module './ecommerce' has already exported a member named 'Address'. Consider explicitly re-exporting to resolve the ambiguity.
+src/services/index.ts(7,1): error TS2308: Module './socialfeed' has already exported a member named 'SearchFilters'. Consider explicitly re-exporting to resolve the ambiguity.
+src/services/index.ts(9,1): error TS2308: Module './ecommerce' has already exported a member named 'Address'. Consider explicitly re-exporting to resolve the ambiguity.
+src/services/index.ts(10,1): error TS2308: Module './developerhub' has already exported a member named 'PerformanceMetrics'. Consider explicitly re-exporting to resolve the ambiguity.
+src/services/index.ts(10,1): error TS2308: Module './loyaltywallet' has already exported a member named 'Transaction'. Consider explicitly re-exporting to resolve the ambiguity.
+src/services/index.ts(10,1): error TS2308: Module './loyaltywallet' has already exported a member named 'TransactionFilters'. Consider explicitly re-exporting to resolve the ambiguity.
+src/services/plugins.ts(390,5): error TS2353: Object literal may only specify known properties, and 'displayName' does not exist in type 'Partial<PluginManifest>'.
+src/services/trae-agents-interface.ts(1,10): error TS2305: Module '"@/types/common"' has no exported member 'JeanAction'.
+src/services/videoStudio.ts(74,3): error TS2300: Duplicate identifier 'activeJobs'.
+src/services/videoStudio.ts(79,3): error TS2300: Duplicate identifier 'activeJobs'.
+src/services/videoStudio.ts(79,3): error TS2717: Subsequent property declarations must have the same type.  Property 'activeJobs' must be of type 'number', but here has type '{ projectId: string; title: string; progress: number; startedAt: string; estimatedCompletion: string; }[]'.
+src/store/index.ts(3,16): error TS2305: Module '"@/types"' has no exported member 'LoginData'.
+src/store/index.ts(3,27): error TS2305: Module '"@/types"' has no exported member 'RegisterData'.
+src/store/index.ts(3,41): error TS2305: Module '"@/types"' has no exported member 'Project'.
+src/store/index.ts(3,50): error TS2305: Module '"@/types"' has no exported member 'CreateProjectData'.
+src/store/index.ts(3,69): error TS2305: Module '"@/types"' has no exported member 'AIService'.
+src/store/index.ts(3,103): error TS2305: Module '"@/types"' has no exported member 'Notification'.
+src/types/index.ts(567,3): error TS2717: Subsequent property declarations must have the same type.  Property 'action' must be of type '{ label: string; url?: string | undefined; handler?: string | undefined; } | undefined', but here has type '{ label: string; handler: () => void; } | undefined'.

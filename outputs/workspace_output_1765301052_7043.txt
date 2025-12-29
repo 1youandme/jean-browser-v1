@@ -1,0 +1,10 @@
+-rw-r--r-- 1 root root  4427 Dec  5 00:58 /workspace/src-tauri/src/ai.rs
+-rw-r--r-- 1 root root 26069 Dec  8 21:41 /workspace/src-tauri/src/ai_gateway.rs
+-rw-r--r-- 1 root root 16964 Dec  5 03:47 /workspace/src-tauri/src/auto_api.rs
+-rw-r--r-- 1 root root  8458 Dec  5 03:20 /workspace/src-tauri/src/backlog.rs
+-rw-r--r-- 1 root root  2160 Dec  5 00:58 /workspace/src-tauri/src/commands.rs
+-rw-r--r-- 1 root root 43878 Dec  6 22:06 /workspace/src-tauri/src/docker_monitor.rs
+-rw-r--r-- 1 root root  3292 Dec  8 22:14 /workspace/src-tauri/src/error.rs
+-rw-r--r-- 1 root root 13938 Dec  5 03:35 /workspace/src-tauri/src/integrations.rs
+-rw-r--r-- 1 root root 55733 Dec  6 23:12 /workspace/src-tauri/src/jean_core.rs
+-rw-r--r-- 1 root root 24449 Dec  6 23:23 /workspace/src-tauri/src/jean_memory.rs

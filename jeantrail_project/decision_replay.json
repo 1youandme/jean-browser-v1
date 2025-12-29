@@ -1,0 +1,20 @@
+{
+  "entries": [
+    {
+      "context": "ui:presence",
+      "decision_type": "policy",
+      "ninja_advisory": "respect_freeze",
+      "internal_advisory": "respect_freeze",
+      "equal": true,
+      "timestamp": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "context": "ui:routing",
+      "decision_type": "route",
+      "ninja_advisory": "ui_explanation",
+      "internal_advisory": "ui_explanation",
+      "equal": true,
+      "timestamp": "2025-01-01T00:00:01.000Z"
+    }
+  ]
+}

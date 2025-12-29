@@ -1,0 +1,2 @@
+/workspace/.env.jeantrail-os
+/workspace/.env.example

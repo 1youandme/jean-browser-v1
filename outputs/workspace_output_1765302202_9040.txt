@@ -1,0 +1,50 @@
+# 🌟 JeanTrail OS - AI-Powered Browser of the Future
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![Docker](https://img.shields.io/badge/docker-%3E%3D20.0.0-blue.svg)](https://www.docker.com/)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/jeantrail/jeantrail-os)
+
+> 🤖 **JeanTrail OS** is a revolutionary AI-powered browser that combines the power of artificial intelligence with multi-environment browsing, creating an unprecedented web experience.
+
+---
+
+## 🚀 Quick Start
+
+### One-Click Installation & Launch
+```bash
+# Clone the repository
+git clone https://github.com/jeantrail/jeantrail-os.git
+cd jeantrail-os
+
+# Start everything (Linux/macOS)
+./run.sh
+
+# Or on Windows
+run.bat
+```
+
+That's it! 🎉 JeanTrail OS will automatically:
+- ✅ Set up all dependencies
+- ✅ Start AI services (Qwen-3, SDXL, Whisper, Coqui TTS)
+- ✅ Launch the browser interface
+- ✅ Activate Jean AI assistant
+
+### Access URLs
+- **Main Interface**: http://localhost:1420
+- **Dashboard**: http://localhost:1420/dashboard
+- **AI APIs**: http://localhost:8001-8004
+
+---
+
+## 🌟 Key Features
+
+### 🤖 Jean AI Assistant
+- **3D Animated Avatar** with facial expressions and eye tracking
+- **Natural Language Commands** for browser control
+- **Context-Aware Responses** based on current page and user history
+- **Multi-Language Support** (50+ languages including Arabic)
+- **Voice Interaction** with speech-to-text and text-to-speech
+
+### 🌐 4-Strip Browser Architecture
+- **🖥️ Local Device Strip**: Browse local files, run desktop apps

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Ninja Advisory Log Entry",
+  "type": "object",
+  "properties": {
+    "timestamp": { "type": "string", "format": "date-time" },
+    "context": { "type": "string" },
+    "decision_type": { "type": "string", "enum": ["route", "policy", "explanation", "block", "consent"] },
+    "advisory": { "type": "string" },
+    "advisory_id": { "type": "string" }
+  },
+  "required": ["timestamp", "context", "decision_type", "advisory", "advisory_id"],
+  "additionalProperties": true
+}

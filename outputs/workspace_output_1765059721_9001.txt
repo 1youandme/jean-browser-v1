@@ -1,0 +1,10 @@
+use serde::{Deserialize, Serialize};
+use uuid::Uuid;
+use chrono::{DateTime, Utc, Duration};
+use sqlx::{PgPool, Row};
+
+use crate::commands::{CommandResult, DatabasePool};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PermissionRequest {
+    pub user_id: Uuid,

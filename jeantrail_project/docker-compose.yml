@@ -1,0 +1,46 @@
+version: "3.8"
+name: autonomousjean
+networks:
+  autonomousjean_net:
+    driver: bridge
+services:
+  ws-gateway:
+    build: ./services/ws-gateway
+    ports:
+      - "8787:8787"
+    environment:
+      - ALLOW_ORIGIN=localhost
+    networks:
+      - autonomousjean_net
+  ai-runtime:
+    build: ./services/ai-runtime
+    command: ["sleep","infinity"]
+    networks:
+      - autonomousjean_net
+    volumes:
+      - jean_models:/opt/models
+  tf-runtime:
+    image: tensorflow/tensorflow:2.15.0
+    command: ["sleep","infinity"]
+    networks:
+      - autonomousjean_net
+  media-runtime:
+    build: ./services/media-runtime
+    command: ["sleep","infinity"]
+    networks:
+      - autonomousjean_net
+    volumes:
+      - jean_media:/opt/media
+  data-runtime:
+    build: ./services/data-runtime
+    command: ["sleep","infinity"]
+    networks:
+      - autonomousjean_net
+  three-runtime:
+    build: ./services/three-runtime
+    command: ["sleep","infinity"]
+    networks:
+      - autonomousjean_net
+volumes:
+  jean_models:
+  jean_media:

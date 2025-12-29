@@ -1,0 +1,14 @@
+{
+  "neutral": { "headPitch": 0.0, "eyeIntensity": 0.4, "browTension": 0.2 },
+  "focus": { "headPitch": -0.08, "eyeIntensity": 0.7, "browTension": 0.6 },
+  "empathy": { "headPitch": 0.05, "eyeIntensity": 0.5, "browTension": 0.3 },
+  "authority": { "headPitch": -0.12, "eyeIntensity": 0.8, "browTension": 0.7 },
+  "calm": { "headPitch": 0.02, "eyeIntensity": 0.35, "browTension": 0.15 },
+  "decision_state_map": {
+    "idle": "neutral",
+    "observing": "focus",
+    "responding": "empathy",
+    "executing": "authority",
+    "emergency_stop": "calm"
+  }
+}

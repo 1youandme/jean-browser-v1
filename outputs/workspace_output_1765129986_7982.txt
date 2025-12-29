@@ -1,0 +1,7 @@
+database/migrations/001_initial_schema.sql
+database/migrations/006_jean_memory_system.sql
+database/migrations/007_jean_permissions_enhanced.sql
+database/migrations/008_jean_multilingual.sql
+database/migrations/009_jean_model_hub.sql
+database/schema.sql
+database/seed_data.sql

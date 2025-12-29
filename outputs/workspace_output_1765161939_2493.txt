@@ -1,0 +1,89 @@
+export interface Tab {
+  id: string;
+  title: string;
+  url?: string;
+  path?: string;
+  type: 'local' | 'proxy' | 'web' | 'mobile';
+  isActive: boolean;
+  isPinned: boolean;
+  favicon?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface JeanMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+  actions?: JeanAction[];
+}
+
+export interface JeanAction {
+  type: 'open_tab' | 'close_tab' | 'navigate' | 'open_local_path';
+  targetBar: 'local' | 'proxy' | 'web' | 'mobile';
+  payload: Record<string, any>;
+}
+
+export interface Workspace {
+  id: string;
+  userId: string;
+  name: string;
+  layoutJson: SplitLayout;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface SplitLayout {
+  panes: SplitPane[];
+  direction: 'horizontal' | 'vertical';
+}
+
+export interface SplitPane {
+  id: string;
+  viewType: 'local' | 'proxy' | 'web' | 'mobile';
+  tabId?: string;
+  size?: number;
+}
+
+export interface ProxyNode {
+  id: string;
+  userId: string;
+  host: string;
+  port: number;
+  protocol: string;
+  status: 'active' | 'inactive' | 'error';
+  lastCheckedAt?: Date;
+  createdAt: Date;
+}
+
+export interface ProxySession {
+  id: string;
+  userId: string;
+  nodeId: string;
+  startedAt: Date;
+  endedAt?: Date;
+  bytesUp?: number;
+  bytesDown?: number;
+}
+
+export interface FileEntry {
+  name: string;
+  path: string;
+  isDirectory: boolean;
+  size?: number;
+  modified?: string;
+}
+
+export interface AIResponse {
+  response: string;
+  actions?: JeanAction[];
+}
+
+export interface AIRequest {
+  prompt: string;
+  contextJson?: string;
+  model?: string;
+}
+
+export type ViewType = 'local' | 'proxy' | 'web' | 'mobile';

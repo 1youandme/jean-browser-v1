@@ -1,0 +1,20 @@
+total 200
+drwxr-xr-x 2 root root  4096 Dec  5 03:53 .
+drwxr-xr-x 3 root root  4096 Dec  5 00:59 ..
+-rw-r--r-- 1 root root  4427 Dec  5 00:58 ai.rs
+-rw-r--r-- 1 root root 16964 Dec  5 03:47 auto_api.rs
+-rw-r--r-- 1 root root  8458 Dec  5 03:20 backlog.rs
+-rw-r--r-- 1 root root  2160 Dec  5 00:58 commands.rs
+-rw-r--r-- 1 root root 13938 Dec  5 03:35 integrations.rs
+-rw-r--r-- 1 root root   131 Dec  5 00:57 lib.rs
+-rw-r--r-- 1 root root  1885 Dec  5 00:59 local_fs.rs
+-rw-r--r-- 1 root root 15113 Dec  5 03:43 local_hub.rs
+-rw-r--r-- 1 root root 11477 Dec  5 03:25 loyalty.rs
+-rw-r--r-- 1 root root 11593 Dec  5 04:49 main.rs
+-rw-r--r-- 1 root root  6831 Dec  5 03:16 models.rs
+-rw-r--r-- 1 root root 10395 Dec  5 03:28 plugins.rs
+-rw-r--r-- 1 root root  2284 Dec  5 00:59 proxy.rs
+-rw-r--r-- 1 root root 19881 Dec  5 05:19 security.rs
+-rw-r--r-- 1 root root 18333 Dec  5 03:53 transport.rs
+-rw-r--r-- 1 root root 14087 Dec  5 03:39 video_studio.rs
+-rw-r--r-- 1 root root  1888 Dec  5 00:58 workspace.rs

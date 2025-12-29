@@ -1,0 +1,21 @@
+     1	      console.error('Failed to load background tasks:', error);
+     2	    }
+     3	  };
+     4	
+     5	  const updateBackgroundTasks = async () => {
+     6	    // Update task progress and status
+     7	    setBackgroundTasks(prev => prev.map(task => {
+     8	      if (task.status === 'running') {
+     9	        const progress = Math.min(task.progress + Math.random() * 10, 100);
+    10	        return {
+    11	          ...task,
+    12	          progress,
+    13	          status: progress >= 100 ? 'completed' : 'running'
+    14	        };
+    15	      }
+    16	      return task;
+    17	    }).filter(task => task.status !== 'completed' || 
+    18	      (new Date().getTime() - task.startTime.getTime()) < 30000); // Keep completed tasks for 30 seconds
+    19	  });
+    20	
+    21	  const checkConnectionStatus = () => {

@@ -1,0 +1,9 @@
+total 100
+drwxr-xr-x 2 root root  4096 Dec  7 17:55 .
+drwxr-xr-x 3 root root  4096 Dec  5 05:02 ..
+-rw-r--r-- 1 root root   252 Dec  5 04:56 001_initial_schema.sql
+-rw-r--r-- 1 root root 11254 Dec  6 23:16 006_jean_memory_system.sql
+-rw-r--r-- 1 root root 16573 Dec  6 23:31 007_jean_permissions_enhanced.sql
+-rw-r--r-- 1 root root 18901 Dec  6 23:38 008_jean_multilingual.sql
+-rw-r--r-- 1 root root 17280 Dec  6 23:47 009_jean_model_hub.sql
+-rw-r--r-- 1 root root 13734 Dec  7 17:55 010_jean_orchestrator_unlimited.sql
