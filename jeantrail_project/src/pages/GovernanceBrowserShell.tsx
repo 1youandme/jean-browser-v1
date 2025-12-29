@@ -65,6 +65,7 @@ export default function GovernanceBrowserShell() {
               <div className="w-6 h-6 border border-gray-300 bg-white text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 Info
               </div>
+              <div className="ml-3 text-[10px] text-gray-600">Informational only • Non-Operational</div>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -83,7 +84,7 @@ export default function GovernanceBrowserShell() {
         {showAds && (
           <div className="px-6 pb-3">
             <div className="w-[260px] border border-gray-300 bg-white p-3 text-xs">
-              <div className="text-[11px] text-gray-600 mb-2">Sponsored (Static)</div>
+              <div className="text-[11px] text-gray-600 mb-2">Sponsored (Static — Non-Operational)</div>
               <div className="grid grid-cols-3 gap-2">
                 <div className="h-12 border border-gray-300 bg-gray-50 flex items-center justify-center">Company A</div>
                 <div className="h-12 border border-gray-300 bg-gray-50 flex items-center justify-center">Company B</div>
@@ -303,7 +304,7 @@ export default function GovernanceBrowserShell() {
             <div className="w-6 h-6 border border-gray-300 bg-gray-50 text-[10px] flex items-center justify-center">Review</div>
           </div>
           <div className="text-xs font-semibold">v1 – Governance Locked</div>
-          <div className="text-xs text-gray-600">Local-first. Deny-by-default. No telemetry.</div>
+          <div className="text-xs text-gray-600">Local-first • Deny-by-default • No telemetry • Non-Operational • Review-only</div>
         </div>
       </div>
     </div>
