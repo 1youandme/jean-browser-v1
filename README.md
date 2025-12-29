@@ -560,7 +560,7 @@ git push origin feature/amazing-feature
 - **Discord**: [انضم إلى Discord الخاص بنا](https://discord.gg/jeantrail)
 - **تويتر**: [@JeanTrailOS](https://twitter.com/jeantrail-os)
 - **GitHub**: [المشكلات والمناقشات](https://github.com/jeantrail/jeantrail-os)
-- **الموقع**: [jeantrail.ai](https://jeantrail.ai)
+- **الموقع**: [jeantrail.com](https://jeantrail.com)
 
 ---
 
