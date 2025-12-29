@@ -1,3 +1,14 @@
+# ⚠️ GOVERNANCE REVIEW BUILD
+
+**STATUS: NON-OPERATIONAL / REVIEW ONLY**
+
+- **This build is UI-only and review-only**
+- **No browsing, no networking, no backend**
+- **No telemetry, analytics, or third-party scripts**
+- **Public review is allowed; operation is not**
+
+---
+
 # 🌟 JeanTrail Browser - The Future of Web Browsing
 
 ![JeanTrail Logo](https://via.placeholder.com/200x80/1e40af/ffffff?text=JeanTrail)
