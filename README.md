@@ -403,7 +403,7 @@ Need help? We're here for you!
 - **Documentation**: Check our comprehensive guides
 - **Community**: Join our Discord server
 - **Issues**: Report bugs on GitHub
-- **Email**: support@jeantrail.ai
+- **Email**: support@jeantrail.com
 
 ---
 
