@@ -1,15 +1,19 @@
 # ⚠️ GOVERNANCE REVIEW BUILD
 
-**STATUS: NON-OPERATIONAL / REVIEW ONLY**
+**STATUS: FROZEN / NON-OPERATIONAL / REVIEW ONLY**
 
+**Release Status: Frozen (v1.1)**
 - **This build is UI-only and review-only**
+- **No further v1.x changes allowed without governance approval**
 - **No browsing, no networking, no backend**
 - **No telemetry, analytics, or third-party scripts**
 - **Public review is allowed; operation is not**
 
+For detailed UI specifications, see [UI-REFERENCE-v1.1.md](docs/UI-REFERENCE-v1.1.md).
+
 ---
 
-# 🌟 JeanTrail Browser - The Future of Web Browsing
+# 🌟 Jean Browser v1.1 - The Future of Web Browsing
 
 ![JeanTrail Logo](https://via.placeholder.com/200x80/1e40af/ffffff?text=JeanTrail)
 
