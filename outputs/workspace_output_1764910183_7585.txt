@@ -1,0 +1,2 @@
+27:use tower_http::cors::CorsLayer;
+194:        .layer(CorsLayer::permissive());

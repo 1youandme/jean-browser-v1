@@ -1,0 +1,162 @@
+import React, { useState } from 'react';
+import { ChevronLeft, ChevronRight, RefreshCw, Bookmark, Settings, Bot, Globe, Shield, Smartphone, Folder } from 'lucide-react';
+import { Tab, ViewType } from '../types';
+
+interface HeaderProps {
+  tabs: Tab[];
+  activeTabId: string;
+  onTabSelect: (tabId: string) => void;
+  onTabClose: (tabId: string) => void;
+  onJeanToggle: () => void;
+  onAddressChange: (address: string) => void;
+  isRTL: boolean;
+  onRTLToggle: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({
+  tabs,
+  activeTabId,
+  onTabSelect,
+  onTabClose,
+  onJeanToggle,
+  onAddressChange,
+  isRTL,
+  onRTLToggle,
+}) => {
+  const [address, setAddress] = useState('');
+  const activeTab = tabs.find(tab => tab.id === activeTabId);
+
+  // Get current address based on active tab
+  const getCurrentAddress = () => {
+    if (!activeTab) return '';
+    if (activeTab.type === 'local' && activeTab.path) {
+      return activeTab.path;
+    }
+    if (activeTab.url) {
+      return activeTab.url;
+    }
+    return '';
+  };
+
+  React.useEffect(() => {
+    setAddress(getCurrentAddress());
+  }, [activeTab]);
+
+  const handleAddressSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onAddressChange(address);
+  };
+
+  const getBarIcon = (type: ViewType) => {
+    switch (type) {
+      case 'local': return <Folder className="w-4 h-4" />;
+      case 'proxy': return <Shield className="w-4 h-4" />;
+      case 'web': return <Globe className="w-4 h-4" />;
+      case 'mobile': return <Smartphone className="w-4 h-4" />;
+    }
+  };
+
+  const getBarLabel = (type: ViewType) => {
+    switch (type) {
+      case 'local': return 'Local Device';
+      case 'proxy': return 'Proxy Network';
+      case 'web': return 'Standard Web';
+      case 'mobile': return 'Mobile Apps';
+    }
+  };
+
+  const viewType: ViewType = activeTab?.type || 'web';
+
+  return (
+    <div className="h-14 bg-white border-b border-gray-200 flex items-center px-4 gap-4">
+      {/* Left: Navigation Controls */}
+      <div className="flex items-center gap-2">
+        <button
+          className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+          title="Back"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+        <button
+          className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+          title="Forward"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
+        <button
+          className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+          title="Refresh"
+        >
+          <RefreshCw className="w-4 h-4" />
+        </button>
+        <button
+          className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+          title="Show Saved Pages"
+        >
+          <Bookmark className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Center: Address Bar */}
+      <form onSubmit={handleAddressSubmit} className="flex-1 max-w-2xl">
+        <div className="relative">
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+            {getBarIcon(viewType)}
+          </div>
+          <input
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            className="w-full h-9 pl-10 pr-4 bg-gray-50 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder={`Enter ${getBarLabel(viewType).toLowerCase()} address...`}
+          />
+        </div>
+      </form>
+
+      {/* Center: Four Work Zone Buttons */}
+      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
+        {(['local', 'proxy', 'web', 'mobile'] as ViewType[]).map((type) => (
+          <button
+            key={type}
+            className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              viewType === type
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+            }`}
+            title={getBarLabel(type)}
+          >
+            <div className="flex items-center gap-2">
+              {getBarIcon(type)}
+              <span className="hidden md:inline">{getBarLabel(type).split(' ')[0]}</span>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {/* Right: Jean & Settings */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onJeanToggle}
+          className="p-2 hover:bg-gray-100 rounded-md transition-colors relative"
+          title="Jean Assistant"
+        >
+          <Bot className="w-5 h-5 text-blue-600" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full"></span>
+        </button>
+        <button
+          className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+          title="Settings"
+        >
+          <Settings className="w-5 h-5" />
+        </button>
+        <button
+          onClick={onRTLToggle}
+          className="p-2 hover:bg-gray-100 rounded-md transition-colors text-xs"
+          title={isRTL ? "Switch to LTR" : "Switch to RTL"}
+        >
+          {isRTL ? 'RTL' : 'LTR'}
+        </button>
+      </div>
+    </div>
+  );
+};

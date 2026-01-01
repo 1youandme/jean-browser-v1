@@ -1,0 +1,10 @@
+// Auto-API Extractor / Generator Service Interface and Implementation
+export interface ApiDiscoveryLog {
+  id: string;
+  userId?: string;
+  session_id?: string;
+  domain: string;
+  method: string;
+  url: string;
+  headers: Record<string, any>;
+  requestBody?: string;

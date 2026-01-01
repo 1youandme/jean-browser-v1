@@ -1,0 +1,50 @@
+import React, { useState, useEffect } from 'react';
+import { JeanIcon } from './JeanIcon';
+
+interface ServiceStatus {
+  name: string;
+  status: 'online' | 'offline' | 'loading';
+  url: string;
+  port: number;
+  responseTime?: number;
+  uptime?: string;
+  lastCheck: string;
+}
+
+interface SystemMetrics {
+  cpu: number;
+  memory: number;
+  disk: number;
+  network: number;
+  gpu?: number;
+}
+
+interface Task {
+  id: string;
+  title: string;
+  status: 'pending' | 'running' | 'completed' | 'failed';
+  progress: number;
+  type: string;
+  createdAt: string;
+  completedAt?: string;
+}
+
+export const Dashboard: React.FC = () => {
+  const [services, setServices] = useState<ServiceStatus[]>([
+    {
+      name: 'Frontend',
+      status: 'online',
+      url: 'http://localhost:1420',
+      port: 1420,
+      lastCheck: new Date().toISOString()
+    },
+    {
+      name: 'Qwen-3 AI',
+      status: 'offline',
+      url: 'http://localhost:8001',
+      port: 8001,
+      lastCheck: new Date().toISOString()
+    },
+    {
+      name: 'SDXL Image Gen',
+      status: 'offline',

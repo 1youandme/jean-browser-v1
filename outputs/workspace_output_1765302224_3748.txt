@@ -1,0 +1,4 @@
+/workspace/src/components/jean/JeanSettings.tsx
+/workspace/src/components/LocalFileBrowser.tsx
+/workspace/src/components/BrowserView.tsx
+/workspace/src/components/JeanSettings.tsx

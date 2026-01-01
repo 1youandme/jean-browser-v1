@@ -1,0 +1,1 @@
+-rw-r--r--  1 root root 28804024 Dec  9 15:43 human head 3d model.glb

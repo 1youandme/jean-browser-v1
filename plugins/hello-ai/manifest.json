@@ -1,0 +1,62 @@
+{
+  "name": "hello-ai",
+  "displayName": "Hello AI Assistant",
+  "version": "1.0.0",
+  "description": "A simple AI assistant plugin that uses Jean API to provide quick responses and chat functionality",
+  "author": "JeanTrail Team",
+  "homepage": "https://jeantrail.ai/plugins/hello-ai",
+  "repository": "https://github.com/jeantrail/hello-ai-plugin",
+  "license": "MIT",
+  "keywords": ["ai", "assistant", "chat", "jean"],
+  "entry": "/index.html",
+  "permissions": [
+    {
+      "name": "jean.chat",
+      "description": "Access Jean AI chat functionality",
+      "required": true
+    },
+    {
+      "name": "ui.panel",
+      "description": "Create UI panels for the chat interface",
+      "required": true
+    },
+    {
+      "name": "storage.read",
+      "description": "Read plugin settings and chat history",
+      "required": false
+    },
+    {
+      "name": "storage.write",
+      "description": "Save plugin settings and chat history",
+      "required": false
+    }
+  ],
+  "apiVersion": "v1",
+  "minJeantrailVersion": "1.0.0",
+  "maxJeantrailVersion": "2.0.0",
+  "dependencies": {},
+  "resources": {
+    "cssFiles": ["styles.css"],
+    "jsFiles": ["script.js"],
+    "assets": ["icon.svg"],
+    "icons": {
+      "icon16x16": "icons/icon16.png",
+      "icon32x32": "icons/icon32.png",
+      "icon48x48": "icons/icon48.png",
+      "icon128x128": "icons/icon128.png"
+    }
+  },
+  "settings": {
+    "defaultModel": "qwen-2.5-72b",
+    "maxTokens": 1000,
+    "temperature": 0.7,
+    "systemPrompt": "You are a helpful AI assistant integrated into JeanTrail. Provide concise and helpful responses.",
+    "saveHistory": true,
+    "maxHistoryItems": 100
+  },
+  "capabilities": [
+    "text-generation",
+    "chat",
+    "quick-commands"
+  ]
+}

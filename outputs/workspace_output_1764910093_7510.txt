@@ -1,0 +1,50 @@
+### Core APIs
+- `GET /health` - Health check
+- `POST /ai/generate` - AI generation endpoint
+- `GET/POST/PUT/DELETE /api/workspaces/*` - Workspace management
+- `GET/POST/DELETE /api/proxy/*` - Proxy network management
+
+### Service APIs (Future)
+- `/api/ecommerce/*` - E-commerce operations
+- `/api/jobboard/*` - Job board operations
+- `/api/delivery/*` - Delivery operations
+- And more...
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For support and questions:
+- Create an issue on GitHub
+- Check the documentation
+- Join our community discussions
+
+## Roadmap
+
+### Phase 1 (Current)
+- ✅ Core browser functionality
+- ✅ Jean AI assistant
+- ✅ Split-screen layouts
+- ✅ Service interfaces
+
+### Phase 2 (Upcoming)
+- 🔄 Full service implementations
+- 🔄 Real-time collaboration
+- 🔄 Advanced AI features
+- 🔄 Mobile applications
+
+### Phase 3 (Future)
+- 📋 Cloud synchronization
+- 📋 Enterprise features
+- 📋 Plugin system
+- 📋 Advanced analytics

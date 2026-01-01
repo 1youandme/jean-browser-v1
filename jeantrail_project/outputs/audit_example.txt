@@ -1,0 +1,2 @@
+[2025-12-31T00:00:00.000Z] intent=chat.send outcome=HALT code=GOVERNANCE_LOCK reason=Governance lock active
+[2025-12-31T00:00:05.000Z] intent=EXPORT_AUDIT outcome=ALLOW code=OK reason=Manual export

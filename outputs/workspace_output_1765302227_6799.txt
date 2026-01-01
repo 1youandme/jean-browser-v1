@@ -1,0 +1,5 @@
+/workspace/src/hooks/useJeanAI.ts
+/workspace/src/hooks/useTabs.ts
+/workspace/src/hooks/useJeanMemory.ts
+/workspace/src/hooks/useJeanAvatar.ts
+/workspace/src/hooks/useJeanAvatarState.ts

@@ -1,0 +1,50 @@
+use serde::{Deserialize, Serialize};
+use uuid::Uuid;
+use chrono::{DateTime, Utc};
+use std::sync::Arc;
+use tokio::sync::RwLock;
+
+use crate::commands::{CommandResult, DatabasePool};
+use crate::jean_core::JeanOrchestrator;
+use crate::jean_permissions::JeanPermissions;
+use crate::docker_monitor::DockerMonitor;
+use crate::ecommerce::*;
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OrchestratorConfig {
+    pub auto_monitoring: bool,
+    pub auto_pricing: bool,
+    pub auto_promos: bool,
+    pub memory_retention_days: i32,
+    pub permission_expiry_hours: i32,
+    pub cleanup_interval_hours: i32,
+}
+
+impl Default for OrchestratorConfig {
+    fn default() -> Self {
+        Self {
+            auto_monitoring: true,
+            auto_pricing: true,
+            auto_promos: true,
+            memory_retention_days: 90,
+            permission_expiry_hours: 24,
+            cleanup_interval_hours: 6,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SystemStatus {
+    pub orchestrator_status: String,
+    pub docker_monitoring: bool,
+    pub services_running: i32,
+    pub services_healthy: i32,
+    pub active_permissions: i32,
+    pub recent_actions: i32,
+    pub memory_entries: i32,
+    pub new_products: i32,
+    pub active_promos: i32,
+    pub last_cleanup: Option<DateTime<Utc>>,
+    pub uptime_seconds: i64,
+}
+

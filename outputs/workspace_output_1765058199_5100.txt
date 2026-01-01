@@ -1,0 +1,50 @@
+# Jean Orchestrator Architecture Design
+
+## Overview
+Jean is the AI Chief Architect that serves as the central intelligent agent controlling JeanTrail Browser, its services, accounts, and the future 16 TRAE agents.
+
+## Core Capabilities
+
+### 1. Browser Control via Four Strips
+- **Local Desktop**: File system operations, folder navigation, file management
+- **Proxy Network**: Node management, session tracking, P2P connections
+- **Web Browser**: Tab operations, navigation, bookmarking
+- **Mobile Emulator**: Mobile app testing, responsive design validation
+
+### 2. File System Management
+- Browse folders, create directories, copy/move files, rename
+- Sensitive operations (Delete/Move) require user confirmation
+- Private folder access with explicit permissions
+
+### 3. Extension/Plugin Control
+- Enable/disable plugins and integrations
+- Resource usage monitoring
+- Performance optimization suggestions
+
+### 4. Memory & Knowledge Base
+- High-capacity memory store (DB + files)
+- Conversation context preservation
+- Project knowledge base
+- Privacy-controlled access
+
+### 5. Docker/Container Monitoring
+- Container status tracking (Up/Down, CPU, RAM)
+- Service restart/shutdown suggestions
+- Resource optimization
+
+### 6. Conversation Linking
+- Context continuity across sessions
+- Development session management
+- Historical conversation retrieval
+
+## Permission System
+
+### Actions Without Confirmation
+- Read web pages and non-sensitive files
+- Summarize tab content
+- Open new tabs for reading
+- Suggest actions without execution
+
+### Actions Requiring Confirmation
+- File delete/move/rename operations
+- Financial transactions (purchases, refunds, subscriptions)

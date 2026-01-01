@@ -1,0 +1,3 @@
+/workspace/docker-compose.ai.yml
+/workspace/docker-compose.yml
+/workspace/docker-compose.jeantrail-os.yml

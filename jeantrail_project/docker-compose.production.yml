@@ -1,0 +1,236 @@
+version: '3.8'
+
+# JEAN V3 - SOVEREIGN AI PRODUCTION STACK
+# Constraints: Docker-only, GPU-aware, Local-first, No Telemetry
+# Network: Fully isolated (internal: true), no outbound internet access.
+
+services:
+  # ---------------------------------------------------------------------------
+  # 1. KERNEL - Sovereign Logic Core
+  # Orchestrates the ExecutionGraph. The Brain.
+  # ---------------------------------------------------------------------------
+  kernel:
+    build:
+      context: .
+      dockerfile: docker/kernel/Dockerfile
+      target: production
+    image: jean-v3/kernel:latest
+    container_name: jean_kernel
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    read_only: true # Immutable runtime
+    tmpfs:
+      - /tmp
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      - TELEMETRY_DISABLED=true
+      - NETWORK_ACCESS=none
+      - GRAPH_STORE_PATH=/data/state/graphs
+    volumes:
+      - kernel_state:/data/state # Persistent graph state
+      - artifacts_data:/data/artifacts:ro # Read-only access to completed works
+    networks:
+      - jean_internal
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # 2. ROUTER - Capability Dispatcher
+  # Routes tasks from Kernel to appropriate Workers based on NodeSpec.
+  # ---------------------------------------------------------------------------
+  router:
+    build:
+      context: .
+      dockerfile: docker/router/Dockerfile
+    image: jean-v3/router:latest
+    container_name: jean_router
+    restart: always
+    environment:
+      - ROUTING_STRATEGY=capability_match
+      - MAX_CONCURRENT_JOBS=10
+    networks:
+      - jean_internal
+    depends_on:
+      - kernel
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  # ---------------------------------------------------------------------------
+  # 3. VIDEO WORKER - Generative Pipeline
+  # Hosts: Stable Video Diffusion, AnimateDiff
+  # Requirement: NVIDIA GPU
+  # ---------------------------------------------------------------------------
+  video-worker:
+    build:
+      context: .
+      dockerfile: docker/workers/video/Dockerfile
+    image: jean-v3/worker-video:latest
+    container_name: jean_worker_video
+    profiles: ["gpu", "production"]
+    restart: on-failure
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - MODEL_BASE_PATH=/models/video
+      - PRECISION=fp16
+      - OFFLOAD_CPU=true
+    volumes:
+      - models_cache:/models:ro # Pre-loaded weights (Read-Only)
+      - artifacts_data:/data/artifacts:rw # Output generation
+    networks:
+      - jean_internal
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # ---------------------------------------------------------------------------
+  # 4. REASONING WORKER - LLM Inference
+  # Hosts: DeepSeek-R1, Qwen2.5
+  # Requirement: GPU preferred, CPU fallback possible (slow)
+  # ---------------------------------------------------------------------------
+  reasoning-worker:
+    build:
+      context: .
+      dockerfile: docker/workers/reasoning/Dockerfile
+    image: jean-v3/worker-reasoning:latest
+    container_name: jean_worker_reasoning
+    profiles: ["gpu", "production"]
+    restart: on-failure
+    runtime: nvidia
+    environment:
+      - MODEL_ID=deepseek-r1-distill-qwen-32b
+      - QUANTIZATION=q4_k_m
+      - CONTEXT_WINDOW=32768
+    volumes:
+      - models_cache:/models:ro
+      - artifacts_data:/data/artifacts:rw
+    networks:
+      - jean_internal
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # ---------------------------------------------------------------------------
+  # 5. VERIFIER - Quality & Policy Enforcement
+  # Runs post-generation checks (Hallucination detection, Policy compliance)
+  # ---------------------------------------------------------------------------
+  verifier:
+    build:
+      context: .
+      dockerfile: docker/verifier/Dockerfile
+    image: jean-v3/verifier:latest
+    container_name: jean_verifier
+    read_only: true
+    environment:
+      - STRICT_MODE=true
+    volumes:
+      - artifacts_data:/data/artifacts:ro # Inspects outputs
+    networks:
+      - jean_internal
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+
+  # ---------------------------------------------------------------------------
+  # 6. STORAGE - Artifact Store
+  # Serves generated content to UI and Workers.
+  # ---------------------------------------------------------------------------
+  storage:
+    image: minio/minio:latest
+    container_name: jean_storage
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER_FILE=/run/secrets/storage_user
+      - MINIO_ROOT_PASSWORD_FILE=/run/secrets/storage_password
+      - MINIO_BROWSER=off # Disable MinIO browser for tighter security
+    volumes:
+      - artifacts_data:/data
+    networks:
+      - jean_internal
+    secrets:
+      - storage_user
+      - storage_password
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # 7. UI - Jean Browser
+  # The User Interface.
+  # Only service bound to host port.
+  # ---------------------------------------------------------------------------
+  ui:
+    build:
+      context: .
+      dockerfile: docker/ui/Dockerfile
+    image: jean-v3/ui:latest
+    container_name: jean_ui
+    ports:
+      - "127.0.0.1:3000:3000" # Bind to localhost only for security
+    networks:
+      - jean_internal
+    depends_on:
+      - kernel
+      - storage
+    environment:
+      - API_URL=http://kernel:8080
+      - ASSETS_URL=http://storage:9000
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+# ---------------------------------------------------------------------------
+# NETWORKS
+# ---------------------------------------------------------------------------
+networks:
+  jean_internal:
+    driver: bridge
+    internal: true # STRICT ISOLATION: No internet access permitted
+
+# ---------------------------------------------------------------------------
+# VOLUMES
+# ---------------------------------------------------------------------------
+volumes:
+  kernel_state: # Persistent DB for graph execution state
+  artifacts_data: # Shared generated media
+  models_cache: # Large model weights (mounted from host in real prod)
+    driver_opts:
+      type: none
+      device: ${HOST_MODELS_PATH:-./models} # Configurable host path
+      o: bind
+
+# ---------------------------------------------------------------------------
+# SECRETS
+# ---------------------------------------------------------------------------
+secrets:
+  storage_user:
+    file: ./secrets/storage_user.txt
+  storage_password:
+    file: ./secrets/storage_password.txt

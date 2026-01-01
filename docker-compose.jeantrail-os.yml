@@ -1,0 +1,558 @@
+version: '3.8'
+
+services:
+  # =============================================================================
+  # JeanTrail Backend Services
+  # =============================================================================
+  jeantrail-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jeantrail-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://jeantrail:jeantrail_password@db:5432/jeantrail
+      - REDIS_URL=redis://redis:6379/0
+      - JEAN_LLM_MODEL=qwen:latest
+      - TRAE_HOST=trae-gateway
+      - TRAE_PORT=9000
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./logs:/var/log/jeantrail
+      - ./storage:/var/lib/jeantrail/storage
+    depends_on:
+      - db
+      - redis
+      - qwen-server
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # =============================================================================
+  # Database Services
+  # =============================================================================
+  db:
+    image: postgres:15-alpine
+    container_name: jeantrail-db
+    environment:
+      - POSTGRES_DB=jeantrail
+      - POSTGRES_USER=jeantrail
+      - POSTGRES_PASSWORD=jeantrail_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jeantrail"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: jeantrail-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # =============================================================================
+  # AI/LLM Services
+  # =============================================================================
+  qwen-server:
+    image: qwenllm/qwen:latest
+    container_name: jeantrail-qwen
+    ports:
+      - "8001:8000"
+    environment:
+      - MODEL_PATH=/models/qwen-14b
+      - CONTEXT_LENGTH=4096
+      - GPU_LAYERS=35
+    volumes:
+      - ./models:/models
+      - ./models/cache:/root/.cache
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # =============================================================================
+  # TRAE Agents Services
+  # =============================================================================
+  trae-gateway:
+    build:
+      context: ./agents
+      dockerfile: Dockerfile.gateway
+    container_name: trae-gateway
+    ports:
+      - "9000:9000"
+    environment:
+      - REDIS_URL=redis://redis:6379/1
+      - AGENT_REGISTRY_URL=http://agent-registry:9001
+    depends_on:
+      - redis
+      - agent-registry
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  agent-registry:
+    build:
+      context: ./agents
+      dockerfile: Dockerfile.registry
+    container_name: agent-registry
+    ports:
+      - "9001:9001"
+    environment:
+      - DATABASE_URL=postgresql://jeantrail:jeantrail_password@db:5432/jeantrail
+    depends_on:
+      - db
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  # TRAE Agent Containers (16 Agents)
+  jeantrail-designer:
+    build:
+      context: ./agents/designer
+      dockerfile: Dockerfile
+    container_name: jeantrail-designer-1
+    environment:
+      - AGENT_ID=1
+      - AGENT_NAME=JeanTrailUI Designer
+      - GATEWAY_URL=http://trae-gateway:9000
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '0.5'
+
+  jeantrail-ai-local:
+    build:
+      context: ./agents/ai-local
+      dockerfile: Dockerfile
+    container_name: jeantrail-ai-2
+    environment:
+      - AGENT_ID=2
+      - AGENT_NAME=ذكاء محلي محسن
+      - GATEWAY_URL=http://trae-gateway:9000
+      - QWEN_SERVER_URL=http://qwen-server:8000
+    depends_on:
+      - trae-gateway
+      - qwen-server
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+          cpus: '4'
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  jeantrail-scraper:
+    build:
+      context: ./agents/scraper
+      dockerfile: Dockerfile
+    container_name: jeantrail-scraper-3
+    environment:
+      - AGENT_ID=3
+      - AGENT_NAME=Scraper Commerce
+      - GATEWAY_URL=http://trae-gateway:9000
+      - BROWSER_ENGINE=chromium
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2'
+
+  jeantrail-devops:
+    build:
+      context: ./agents/devops
+      dockerfile: Dockerfile
+    container_name: jeantrail-devops-4
+    environment:
+      - AGENT_ID=4
+      - AGENT_NAME=DevOps مهندس
+      - GATEWAY_URL=http://trae-gateway:9000
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    privileged: true
+
+  jeantrail-project-manager:
+    build:
+      context: ./agents/project-manager
+      dockerfile: Dockerfile
+    container_name: jeantrail-pm-5
+    environment:
+      - AGENT_ID=5
+      - AGENT_NAME=مدير مشروع البرمجيات
+      - GATEWAY_URL=http://trae-gateway:9000
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  jeantrail-qa:
+    build:
+      context: ./agents/qa
+      dockerfile: Dockerfile
+    container_name: jeantrail-qa-6
+    environment:
+      - AGENT_ID=6
+      - AGENT_NAME=مهندس اختبارات
+      - GATEWAY_URL=http://trae-gateway:9000
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  jeantrail-security:
+    build:
+      context: ./agents/security
+      dockerfile: Dockerfile
+    container_name: jeantrail-security-7
+    environment:
+      - AGENT_ID=7
+      - AGENT_NAME=أخصائي أمان
+      - GATEWAY_URL=http://trae-gateway:9000
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  jeantrail-mobile:
+    build:
+      context: ./agents/mobile
+      dockerfile: Dockerfile
+    container_name: jeantrail-mobile-8
+    environment:
+      - AGENT_ID=8
+      - AGENT_NAME=محاكي الجوال
+      - GATEWAY_URL=http://trae-gateway:9000
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  jeantrail-support:
+    build:
+      context: ./agents/support
+      dockerfile: Dockerfile
+    container_name: jeantrail-support-9
+    environment:
+      - AGENT_ID=9
+      - AGENT_NAME=دعم جين تريل
+      - GATEWAY_URL=http://trae-gateway:9000
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  jeantrail-proxy:
+    build:
+      context: ./agents/proxy
+      dockerfile: Dockerfile
+    container_name: jeantrail-proxy-10
+    environment:
+      - AGENT_ID=10
+      - AGENT_NAME=مدير بروكسي
+      - GATEWAY_URL=http://trae-gateway:9000
+    ports:
+      - "3128:3128"
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  jeantrail-marketplace:
+    build:
+      context: ./agents/marketplace
+      dockerfile: Dockerfile
+    container_name: jeantrail-market-11
+    environment:
+      - AGENT_ID=11
+      - AGENT_NAME=سوق جين ترايل
+      - GATEWAY_URL=http://trae-gateway:9000
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  jeantrail-payments:
+    build:
+      context: ./agents/payments
+      dockerfile: Dockerfile
+    container_name: jeantrail-payments-12
+    environment:
+      - AGENT_ID=12
+      - AGENT_NAME=مدير العملة
+      - GATEWAY_URL=http://trae-gateway:9000
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  jeantrail-shopify:
+    build:
+      context: ./agents/shopify
+      dockerfile: Dockerfile
+    container_name: jeantrail-shopify-13
+    environment:
+      - AGENT_ID=13
+      - AGENT_NAME=Shopify متكامل
+      - GATEWAY_URL=http://trae-gateway:9000
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  jeantrail-media:
+    build:
+      context: ./agents/media
+      dockerfile: Dockerfile
+    container_name: jeantrail-media-14
+    environment:
+      - AGENT_ID=14
+      - AGENT_NAME=وسائط الذكاء
+      - GATEWAY_URL=http://trae-gateway:9000
+      - GPU_ENABLED=true
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  jeantrail-offline:
+    build:
+      context: ./agents/offline
+      dockerfile: Dockerfile
+    container_name: jeantrail-offline-15
+    environment:
+      - AGENT_ID=15
+      - AGENT_NAME=مدير خدمات بلا نت
+      - GATEWAY_URL=http://trae-gateway:9000
+    depends_on:
+      - trae-gateway
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  jeantrail-automation:
+    build:
+      context: ./agents/automation
+      dockerfile: Dockerfile
+    container_name: jeantrail-automation-16
+    environment:
+      - AGENT_ID=16
+      - AGENT_NAME=Automation Master
+      - GATEWAY_URL=http://trae-gateway:9000
+      - N8N_URL=http://n8n:5678
+    depends_on:
+      - trae-gateway
+      - n8n
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  # =============================================================================
+  # Monitoring Services
+  # =============================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: jeantrail-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: jeantrail-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=jeantrail_admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  # =============================================================================
+  # Additional Services
+  # =============================================================================
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: jeantrail-n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=jeantrail_n8n
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+    container_name: jeantrail-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  # =============================================================================
+  # Frontend Services
+  # =============================================================================
+  jeantrail-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: jeantrail-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_WS_URL=ws://localhost:8000
+    depends_on:
+      - jeantrail-backend
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+  # =============================================================================
+  # Reverse Proxy
+  # =============================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: jeantrail-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - jeantrail-backend
+      - jeantrail-frontend
+    networks:
+      - jeantrail-network
+    restart: unless-stopped
+
+# =============================================================================
+  # Networks
+# =============================================================================
+networks:
+  jeantrail-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  n8n_data:
+    driver: local
+  elasticsearch_data:
+    driver: local

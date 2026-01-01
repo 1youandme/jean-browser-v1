@@ -1,0 +1,50 @@
+        .map_err(|e| format!("Failed to get active permissions count: {}", e))?
+        .unwrap_or(0);
+
+        // Get actions logged in time range
+        let action_count = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(*) FROM jean_actions_log 
+            WHERE user_id = $1 AND created_at >= $2
+            "#,
+            user_id,
+            cutoff_date
+        )
+        .fetch_one(&mut *conn)
+        .await
+        .map_err(|e| format!("Failed to get action count: {}", e))?
+        .unwrap_or(0);
+
+        // Get most used action types
+        let action_types = sqlx::query!(
+            r#"
+            SELECT action_type, COUNT(*) as count
+            FROM jean_actions_log 
+            WHERE user_id = $1 AND created_at >= $2
+            GROUP BY action_type
+            ORDER BY count DESC
+            LIMIT 5
+            "#,
+            user_id,
+            cutoff_date
+        )
+        .fetch_all(&mut *conn)
+        .await
+        .map_err(|e| format!("Failed to get action types: {}", e))?;
+
+        Ok(PermissionStats {
+            active_permissions: active_count as i32,
+            total_actions: action_count as i32,
+            most_used_actions: action_types.into_iter()
+                .map(|r| (r.action_type, r.count.unwrap_or(0) as i32))
+                .collect(),
+        })
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PermissionStats {
+    pub active_permissions: i32,
+    pub total_actions: i32,
+    pub most_used_actions: Vec<(String, i32)>,
+}

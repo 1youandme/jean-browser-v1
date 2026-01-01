@@ -1,0 +1,100 @@
+
+        // Boost score for certain content types
+        if let Some(content_str) = content.as_str() {
+            // Longer content gets higher score
+            score += (content_str.len() as f32 / 1000.0).min(0.3);
+            
+            // Important keywords
+            let important_keywords = ["decision", "important", "critical", "todo", "bug", "feature"];
+            for keyword in &important_keywords {
+                if content_str.to_lowercase().contains(keyword) {
+                    score += 0.1;
+                }
+            }
+        }
+
+        // Boost score for specific tags
+        let important_tags = ["project", "decision", "bug", "feature", "user-preference"];
+        for tag in tags {
+            if important_tags.contains(&tag.as_str()) {
+                score += 0.1;
+            }
+        }
+
+        score.min(1.0)
+    }
+
+    /// Cleanup old/archived memories
+    pub async fn cleanup_old_memories(&self, days_old: i32) -> CommandResult<i32> {
+        let cutoff_date = chrono::Utc::now() - chrono::Duration::days(days_old as i64);
+        
+        let result = sqlx::query!(
+            r#"
+            UPDATE jean_memory 
+            SET is_archived = true 
+            WHERE created_at < $1 
+                AND is_archived = false 
+                AND relevance_score < 0.3
+            "#,
+            cutoff_date
+        )
+        .execute(&self.db_pool)
+        .await
+        .map_err(|e| format!("Failed to cleanup old memories: {}", e))?;
+
+        Ok(result.rows_affected() as i32)
+    }
+
+    /// Get memory statistics for analytics
+    pub async fn get_memory_stats(&self, user_id: Uuid) -> CommandResult<serde_json::Value> {
+        let mut conn = self.db_pool.acquire().await
+            .map_err(|e| format!("Failed to get connection: {}", e))?;
+
+        // Memory counts by type
+        let memory_by_type = sqlx::query!(
+            r#"
+            SELECT memory_type, COUNT(*) as count
+            FROM jean_memory
+            WHERE user_id = $1 AND is_archived = false
+            GROUP BY memory_type
+            "#,
+            user_id
+        )
+        .fetch_all(&mut *conn)
+        .await
+        .map_err(|e| format!("Failed to get memory type stats: {}", e))?;
+
+        // Most accessed memories
+        let most_accessed = sqlx::query!(
+            r#"
+            SELECT 
+                memory_type, 
+                SUM(access_count) as total_access,
+                AVG(relevance_score) as avg_relevance
+            FROM jean_memory
+            WHERE user_id = $1 AND is_archived = false
+            GROUP BY memory_type
+            ORDER BY total_access DESC
+            LIMIT 5
+            "#,
+            user_id
+        )
+        .fetch_all(&mut *conn)
+        .await
+        .map_err(|e| format!("Failed to get access stats: {}", e))?;
+
+        let stats = serde_json::json!({
+            "memory_by_type": memory_by_type.into_iter().map(|r| serde_json::json!({
+                "type": r.memory_type,
+                "count": r.count.unwrap_or(0)
+            })).collect::<Vec<_>>(),
+            "most_accessed": most_accessed.into_iter().map(|r| serde_json::json!({
+                "type": r.memory_type,
+                "total_access": r.total_access.unwrap_or(0),
+                "avg_relevance": r.avg_relevance.unwrap_or(0.0)
+            })).collect::<Vec<_>>()
+        });
+
+        Ok(stats)
+    }
+}

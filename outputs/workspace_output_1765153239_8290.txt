@@ -1,0 +1,149 @@
+import React, { useState, useEffect } from 'react';
+import { Header } from './components/Header';
+import { TabsStrip } from './components/TabsStrip';
+import { SplitView } from './components/SplitView';
+import { JeanAssistant } from './components/JeanAssistant';
+import { BrowserView } from './components/BrowserView';
+import { LocalFileBrowser } from './components/LocalFileBrowser';
+import { ProxyPanel } from './components/ProxyPanel';
+import { MobileFrame } from './components/MobileFrame';
+import { useTabs } from './hooks/useTabs';
+import { useJeanAI } from './hooks/useJeanAI';
+import { Tab, JeanAction } from './types';
+
+type ViewType = 'local' | 'proxy' | 'web' | 'mobile';
+
+interface SplitPane {
+  id: string;
+  viewType: ViewType;
+  tabId?: string;
+}
+
+export default function App() {
+  const [isRTL, setIsRTL] = useState(false);
+  const [showJeanPanel, setShowJeanPanel] = useState(false);
+  const [splitPanes, setSplitPanes] = useState<SplitPane[]>([
+    { id: 'pane-1', viewType: 'web' }
+  ]);
+  
+  const { 
+    tabs, 
+    activeTabId, 
+    createTab, 
+    closeTab, 
+    setActiveTab, 
+    updateTab 
+  } = useTabs();
+  
+  const { 
+    sendMessage, 
+    conversation, 
+    isTyping,
+    executeAction 
+  } = useJeanAI();
+
+  // Handle Jean AI actions
+  const handleJeanAction = async (action: JeanAction) => {
+    try {
+      await executeAction(action);
+    } catch (error) {
+      console.error('Failed to execute Jean action:', error);
+    }
+  };
+
+  // Get the active tab for a specific view type
+  const getActiveTabForView = (viewType: ViewType) => {
+    return tabs.find(tab => tab.type === viewType && tab.id === activeTabId);
+  };
+
+  const renderPaneContent = (pane: SplitPane) => {
+    const activeTab = pane.tabId ? tabs.find(tab => tab.id === pane.tabId) : null;
+    
+    switch (pane.viewType) {
+      case 'local':
+        return <LocalFileBrowser tab={activeTab} />;
+      case 'proxy':
+        return <ProxyPanel tab={activeTab} />;
+      case 'web':
+        return <BrowserView tab={activeTab} />;
+      case 'mobile':
+        return <MobileFrame tab={activeTab} />;
+      default:
+        return <BrowserView tab={activeTab} />;
+    }
+  };
+
+  return (
+    <div className={`h-screen flex flex-col bg-gray-50 ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* Header with unified controls */}
+      <Header
+        tabs={tabs}
+        activeTabId={activeTabId}
+        onTabSelect={setActiveTab}
+        onTabClose={closeTab}
+        onJeanToggle={() => setShowJeanPanel(!showJeanPanel)}
+        onAddressChange={(address) => {
+          // Handle address bar changes
+          console.log('Address changed:', address);
+        }}
+        isRTL={isRTL}
+        onRTLToggle={() => setIsRTL(!isRTL)}
+      />
+
+      {/* Tabs Strip */}
+      <TabsStrip
+        tabs={tabs}
+        activeTabId={activeTabId}
+        onTabSelect={setActiveTab}
+        onTabClose={closeTab}
+        onCreateTab={createTab}
+        isRTL={isRTL}
+      />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex relative">
+        {/* Split View */}
+        <div className={`flex-1 ${showJeanPanel ? 'w-3/4' : 'w-full'}`}>
+          <SplitView
+            panes={splitPanes}
+            onPaneAdd={(viewType) => {
+              const newPane: SplitPane = {
+                id: `pane-${Date.now()}`,
+                viewType
+              };
+              setSplitPanes([...splitPanes, newPane]);
+            }}
+            onPaneRemove={(paneId) => {
+              setSplitPanes(splitPanes.filter(p => p.id !== paneId));
+            }}
+            onPaneChange={(paneId, viewType) => {
+              setSplitPanes(splitPanes.map(p => 
+                p.id === paneId ? { ...p, viewType } : p
+              ));
+            }}
+          >
+            {splitPanes.map(pane => (
+              <div key={pane.id} className="border border-gray-200">
+                {renderPaneContent(pane)}
+              </div>
+            ))}
+          </SplitView>
+        </div>
+
+        {/* Jean Assistant Panel */}
+        {showJeanPanel && (
+          <div className="w-1/4 border-l border-gray-200">
+            <JeanAssistant
+              conversation={conversation}
+              isTyping={isTyping}
+              onSendMessage={sendMessage}
+              onAction={handleJeanAction}
+              onClose={() => setShowJeanPanel(false)}
+              activeTab={getActiveTabForView('web') || tabs[0]}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

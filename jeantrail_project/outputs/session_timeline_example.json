@@ -1,0 +1,41 @@
+{
+  "entries": [
+    {
+      "decisionId": "dec_1700000000000",
+      "timestamp": 1700000000000,
+      "intent": "EXPLAIN_VERSE",
+      "inputs": { "verse": "2:255" },
+      "outcome": "approved",
+      "confidence": 0.9,
+      "policyChecks": [
+        { "policyName": "ProviderResolution", "passed": true, "reason": "Selected TafsirProvider" },
+        { "policyName": "IsolationLevel", "passed": true },
+        { "policyName": "Permissions", "passed": true }
+      ]
+    },
+    {
+      "decisionId": "dec_1700000005000",
+      "timestamp": 1700000005000,
+      "intent": "LOAD_TAFSIR",
+      "inputs": { "verse": "2:255" },
+      "outcome": "approved",
+      "confidence": 0.95,
+      "policyChecks": [
+        { "policyName": "ProviderResolution", "passed": true, "reason": "Selected TafsirProvider" },
+        { "policyName": "IsolationLevel", "passed": true },
+        { "policyName": "Permissions", "passed": true }
+      ]
+    },
+    {
+      "decisionId": "dec_1700000010000",
+      "timestamp": 1700000010000,
+      "intent": "EXPORT_AUDIT",
+      "inputs": { "format": "json" },
+      "outcome": "rejected",
+      "confidence": 0.0,
+      "policyChecks": [
+        { "policyName": "PolicyOutcome", "passed": false, "reason": "GOVERNANCE_LOCK" }
+      ]
+    }
+  ]
+}

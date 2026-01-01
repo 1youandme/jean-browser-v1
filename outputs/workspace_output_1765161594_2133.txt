@@ -1,0 +1,10 @@
+./src/pages/jeantrail/EcommercePage.tsx
+./src/pages/jeantrail/DeliveryPage.tsx
+./src/pages/jeantrail/JobBoardPage.tsx
+./src/main.tsx
+./src/components/jean/PermissionManager.tsx
+./src/components/jean/JeanSettings.tsx
+./src/components/jean/JeanChat.tsx
+./src/components/JeanAvatar.tsx
+./src/components/SplitView.tsx
+./src/components/JeanModelHub.tsx

@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Video Generation Job Spec",
+  "type": "object",
+  "properties": {
+    "job_id": { "type": "string" },
+    "model_id": { "type": "string", "enum": ["stable-video-diffusion-img2vid-xt", "stable-video-diffusion-img2vid"] },
+    "params": {
+      "type": "object",
+      "properties": {
+        "image_path": { "type": "string", "description": "Path to input image for Image-to-Video" },
+        "prompt": { "type": "string", "description": "Text prompt (if supported by model variant)" },
+        "width": { "type": "integer", "default": 1024 },
+        "height": { "type": "integer", "default": 576 },
+        "num_frames": { "type": "integer", "maximum": 25, "default": 25 },
+        "fps": { "type": "integer", "default": 7 },
+        "motion_bucket_id": { "type": "integer", "default": 127 },
+        "noise_aug_strength": { "type": "number", "default": 0.1 },
+        "seed": { "type": "integer" }
+      },
+      "required": ["image_path"]
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "max_duration_seconds": { "type": "number", "maximum": 12.0, "default": 4.0 },
+        "output_format": { "type": "string", "enum": ["mp4", "gif"], "default": "mp4" }
+      }
+    },
+    "output_path": { "type": "string" }
+  },
+  "required": ["job_id", "params", "output_path"]
+}

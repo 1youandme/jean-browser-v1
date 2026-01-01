@@ -1,0 +1,4 @@
+src/components/AiGatewayInterface.tsx
+src/components/AgentManagementPanel.tsx
+src/components/JeanChatPanel.tsx
+src/components/JeanDeveloperConsole.tsx

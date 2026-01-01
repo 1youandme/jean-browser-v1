@@ -1,0 +1,4 @@
+136:    }).filter(task => task.status !== 'completed' || 
+192:          const safeActions = jeanResponse.actions.filter((action: JeanAction) => 
+322:                  {backgroundTasks.filter(t => t.status === 'running').length} tasks running
+365:                    {backgroundTasks.filter(t => t.status === 'running').length} active
