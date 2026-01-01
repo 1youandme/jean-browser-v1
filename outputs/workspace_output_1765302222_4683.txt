@@ -1,2 +1,0 @@
-/workspace/src/components/Header.tsx
-/workspace/src/components/HeaderRedesigned.tsx

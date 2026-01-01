@@ -1,6 +1,0 @@
-total 44
-drwxr-xr-x  3 root root  4096 Dec  5 05:02 .
-drwxr-xr-x 15 user user  4096 Dec  9 17:40 ..
-drwxr-xr-x  2 root root  4096 Dec  8 21:44 migrations
--rw-r--r--  1 root root 17077 Dec  5 04:55 schema.sql
--rw-r--r--  1 root root 11513 Dec  5 05:02 seed_data.sql

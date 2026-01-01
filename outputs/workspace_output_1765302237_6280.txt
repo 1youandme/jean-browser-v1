@@ -1,2 +1,0 @@
-/workspace/public
-/workspace/public/human head 3d model.glb

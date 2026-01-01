@@ -1,3 +1,0 @@
--rw-r--r-- 1 root root  7397 Dec  8 21:25 /workspace/docker-compose.ai.yml
--rw-r--r-- 1 root root 14633 Dec  7 18:24 /workspace/docker-compose.jeantrail-os.yml
--rw-r--r-- 1 root root  8510 Dec  8 19:58 /workspace/docker-compose.yml

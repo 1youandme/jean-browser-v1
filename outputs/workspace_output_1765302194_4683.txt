@@ -1,6 +1,0 @@
-/workspace/server/routes/ai.routes.ts
-/workspace/server/index.js
-/workspace/server/utils/cache.ts
-/workspace/server/utils/rate-limiter.ts
-/workspace/server/middleware/upload.middleware.ts
-/workspace/server/services/ai.service.ts

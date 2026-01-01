@@ -1,6 +1,0 @@
-src-tauri/src/jean_multilingual.rs
-src-tauri/src/jean_permissions.rs
-src-tauri/src/jean_core.rs
-src-tauri/src/jean_model_hub.rs
-src-tauri/src/orchestrator.rs
-src-tauri/src/jean_memory.rs

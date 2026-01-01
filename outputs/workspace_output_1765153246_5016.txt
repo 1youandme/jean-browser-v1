@@ -1,3 +1,0 @@
-./tsconfig.node.json
-./tsconfig.json
-./package.json

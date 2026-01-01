@@ -1,7 +1,0 @@
-./src-tauri/migrations/004_ecommerce_extension.sql
-./src-tauri/migrations/003_jean_orchestrator.sql
-./database/seed_data.sql
-./database/schema.sql
-./database/migrations/001_initial_schema.sql
-./migrations/002_phase2_extensions.sql
-./migrations/001_initial_schema.sql

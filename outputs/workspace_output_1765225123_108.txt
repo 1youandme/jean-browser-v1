@@ -1,5 +1,0 @@
-server/routes/ai.routes.ts
-server/utils/cache.ts
-server/utils/rate-limiter.ts
-server/middleware/upload.middleware.ts
-server/services/ai.service.ts

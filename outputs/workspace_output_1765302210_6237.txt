@@ -1,5 +1,0 @@
-/workspace/src/pages/jeantrail/index.ts
-/workspace/src/pages/jeantrail/EcommercePage.tsx
-/workspace/src/pages/jeantrail/DeliveryPage.tsx
-/workspace/src/pages/jeantrail/JobBoardPage.tsx
-/workspace/src/pages/JeanTrailDemo.tsx

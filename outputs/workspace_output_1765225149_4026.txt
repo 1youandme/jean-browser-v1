@@ -1,9 +1,0 @@
-./tailwind.config.js
-./extension/auto-api-extractor/background.js
-./extension/auto-api-extractor/popup.js
-./extension/auto-api-extractor/injected.js
-./extension/auto-api-extractor/content.js
-./plugins/hello-ai/script.js
-./scripts/performance-audit.js
-./scripts/scrape_products.js
-./server/index.js
